@@ -52,3 +52,10 @@ backend/prisma/migrations/migration_lock.toml
 # Uploads (keep structure but ignore files)
 backend/prisma/uploads/*
 !backend/prisma/uploads/.gitkeep
+
+# Next.js
+frontend/.next/
+frontend/.next
+.next/
+.next
+
