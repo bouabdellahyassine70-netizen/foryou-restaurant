@@ -1,0 +1,334 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply antialiased;
+  }
+
+:root {
+    /* Brand Colors */
+    --brand-primary: #D97706;
+    --brand-primary-dark: #B45309;
+    --brand-primary-light: #FCD34D;
+    --brand-secondary: #0EA5E9;
+    --brand-secondary-dark: #0284C7;
+    --brand-secondary-light: #E0F2FE;
+
+    /* Client Backgrounds - Warm */
+    --bg-client-primary: #FFFFFF;
+    --bg-client-secondary: #FEFBF7;
+    --bg-client-tertiary: #F9F7F4;
+
+    /* Admin Backgrounds - Cool */
+    --bg-admin-primary: #FFFFFF;
+    --bg-admin-secondary: #F8F9FA;
+    --bg-admin-tertiary: #F1F3F5;
+
+    /* Text Colors */
+    --text-primary: #0A0A0A;
+    --text-secondary: #5F6368;
+    --text-tertiary: #9CA3AF;
+    --text-inverse: #FFFFFF;
+
+    /* Borders */
+    --border-light: #E5E7EB;
+    --border-medium: #D1D5DB;
+    --border-dark: #9CA3AF;
+    --border-focus: #D97706;
+    --border-focus-admin: #0EA5E9;
+
+    /* Status Colors */
+    --status-success: #10B981;
+    --status-success-bg: #D1FAE5;
+    --status-success-text: #065F46;
+    --status-warning: #F59E0B;
+    --status-warning-bg: #FEF3C7;
+    --status-warning-text: #92400E;
+    --status-error: #EF4444;
+    --status-error-bg: #FEE2E2;
+    --status-error-text: #991B1B;
+    --status-info: #3B82F6;
+    --status-info-bg: #DBEAFE;
+    --status-info-text: #1E40AF;
+    --status-neutral: #6B7280;
+    --status-neutral-bg: #F3F4F6;
+    --status-neutral-text: #374151;
+
+    /* Legacy support */
+    --color-bg-primary: var(--bg-client-primary);
+    --color-bg-secondary: var(--bg-client-secondary);
+    --color-text-primary: var(--text-primary);
+    --color-text-secondary: var(--text-secondary);
+    --color-border: var(--border-light);
+    --color-border-dark: var(--border-medium);
+    
+    /* Typography - Uses Next.js font variable */
+    --font-heading: var(--font-inter), -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    --font-body: var(--font-inter), -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    --font-primary: var(--font-inter), -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+body {
+    @apply bg-[#FFFFFF] text-[#0A0A0A];
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.6;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--color-text-primary);
+    letter-spacing: -0.02em;
+  }
+
+  /* Professional number formatting */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer components {
+  /* Professional Card - Client Side */
+  .card {
+    @apply bg-white border border-[#E5E7EB] rounded-2xl p-8;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: all 300ms ease;
+  }
+
+  .card:hover {
+    border-color: var(--border-medium);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+  }
+
+  /* Product Card - Special styling */
+  .card-product {
+    @apply bg-white rounded-2xl overflow-hidden;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: all 300ms ease;
+  }
+
+  .card-product:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-4px);
+  }
+
+  /* Admin Side Cards */
+  .card-admin {
+    @apply bg-white border border-[#E5E7EB] rounded-xl p-4;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .card-order {
+    @apply bg-white border-l-4 border-[#D1D5DB] rounded-lg p-4;
+    transition: all 150ms ease;
+  }
+
+  .card-order:hover {
+    background: var(--bg-admin-secondary);
+    border-left-color: var(--brand-secondary);
+  }
+
+  /* Professional Button */
+  .btn {
+    @apply px-6 py-3 rounded-lg font-medium text-sm transition-all duration-150;
+    font-family: var(--font-heading);
+  }
+
+  .btn-primary {
+    background: var(--brand-primary);
+    color: var(--text-inverse);
+    @apply px-8 py-4 rounded-lg font-semibold text-base;
+    letter-spacing: 0.02em;
+    transition: all 200ms ease;
+  }
+
+  .btn-primary:hover {
+    background: var(--brand-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border-medium);
+    @apply px-8 py-4 rounded-lg font-medium text-base;
+    transition: all 200ms ease;
+  }
+
+  .btn-secondary:hover {
+    background: var(--bg-client-secondary);
+    border-color: var(--border-dark);
+  }
+
+  /* Admin Side Buttons */
+  .btn-admin-primary {
+    background: var(--brand-secondary);
+    color: var(--text-inverse);
+    @apply px-4 py-2 rounded-md font-medium text-sm;
+    transition: all 150ms ease;
+  }
+
+  .btn-admin-primary:hover {
+    background: var(--brand-secondary-dark);
+  }
+
+  .btn-admin-secondary {
+    background: var(--bg-admin-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
+    @apply px-4 py-2 rounded-md font-medium text-sm;
+    transition: all 150ms ease;
+  }
+
+  .btn-admin-secondary:hover {
+    background: var(--bg-admin-tertiary);
+  }
+
+  .btn-admin-danger {
+    background: var(--status-error);
+    color: var(--text-inverse);
+    @apply px-4 py-2 rounded-md font-medium text-sm;
+    transition: all 150ms ease;
+  }
+
+  .btn-admin-danger:hover {
+    background: #DC2626;
+  }
+
+  /* Professional Input */
+  .input {
+    @apply w-full px-4 py-3 bg-white border border-[#E5E7EB] rounded-lg text-[#0A0A0A] placeholder:text-[#5F6368];
+    font-family: var(--font-body);
+    transition: border-color 150ms ease;
+  }
+
+  .input:focus {
+    @apply outline-none border-[#0A0A0A];
+  }
+
+  /* Status Badges - Client Side */
+  .status-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium uppercase;
+    letter-spacing: 0.05em;
+    font-family: var(--font-heading);
+  }
+
+  .badge-success {
+    background: var(--status-success-bg);
+    color: var(--status-success-text);
+  }
+
+  .badge-warning {
+    background: var(--status-warning-bg);
+    color: var(--status-warning-text);
+  }
+
+  .badge-error {
+    background: var(--status-error-bg);
+    color: var(--status-error-text);
+  }
+
+  .badge-info {
+    background: var(--status-info-bg);
+    color: var(--status-info-text);
+  }
+
+  .badge-neutral {
+    background: var(--status-neutral-bg);
+    color: var(--status-neutral-text);
+  }
+
+  /* Status Badges - Admin Side (More Compact) */
+  .badge-status-admin {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Legacy support */
+  .status-badge-completed {
+    @apply badge-neutral;
+  }
+
+  .status-badge-active {
+    @apply bg-[#0A0A0A] text-white;
+  }
+
+  .status-badge-pending {
+    @apply badge-warning;
+  }
+}
+
+@layer utilities {
+  /* Subtle Transitions */
+  .transition-subtle {
+    transition: all 150ms ease;
+  }
+
+  .transition-smooth {
+    transition: all 200ms ease;
+  }
+
+  /* Professional Spacing */
+  .space-section {
+    @apply space-y-8;
+  }
+
+  .space-subsection {
+    @apply space-y-4;
+  }
+
+  /* Grid System */
+  .grid-12 {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  /* Text Hierarchy */
+  .text-display {
+    @apply text-4xl font-semibold tracking-tight;
+    font-family: var(--font-heading);
+  }
+
+  .text-heading-1 {
+    @apply text-2xl font-semibold tracking-tight;
+    font-family: var(--font-heading);
+  }
+
+  .text-heading-2 {
+    @apply text-xl font-semibold tracking-tight;
+    font-family: var(--font-heading);
+  }
+
+  .text-body {
+    @apply text-base font-normal;
+    font-family: var(--font-body);
+    color: var(--color-text-primary);
+  }
+
+  .text-body-secondary {
+    @apply text-sm font-normal;
+    font-family: var(--font-body);
+    color: var(--color-text-secondary);
+  }
+
+  /* Professional Dividers */
+  .divider {
+    @apply border-t border-[#E5E7EB] my-6;
+  }  /* Number Emphasis */
+  .text-number {
+    font-family: var(--font-heading);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+}

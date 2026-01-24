@@ -1,0 +1,266 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  KITCHEN_STAFF
+  WAITER
+  CUSTOMER
+}
+
+enum OrderType {
+  DINE_IN
+  TAKEAWAY
+  DELIVERY
+}
+
+enum OrderStatus {
+  CREATED      // Order submitted (pending)
+  PENDING      // Awaiting cashier confirmation
+  CONFIRMED    // Confirmed by cashier
+  REJECTED     // Rejected by cashier
+  ACCEPTED     // Accepted by cashier
+  PREPARING    // Kitchen is preparing
+  READY        // Ready for pickup / Out for delivery
+  DISPATCHED   // Out for delivery
+  SERVED       // Served (dine-in)
+  COMPLETED    // Completed
+  CANCELLED    // Cancelled
+  PAID
+  REFUNDED
+}
+
+enum PaymentMethod {
+  STRIPE
+  COUNTER
+  CASH
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  firstName String?
+  lastName  String?
+  phone     String?
+  role      UserRole @default(CUSTOMER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders       Order[]
+  auditLogs    AuditLog[]
+  promoCodes   PromoCode[] @relation("CreatedBy")
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  image       String?
+  displayOrder Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items MenuItem[]
+}
+
+model MenuItem {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  price       Decimal  @db.Decimal(10, 2)
+  image       String?
+  categoryId  String
+  isAvailable Boolean  @default(true)
+  displayOrder Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category      Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  modifiers     Modifier[]
+  orderItems    OrderItem[]
+  availability  AvailabilitySchedule[]
+}
+
+model Modifier {
+  id        String   @id @default(uuid())
+  name      String
+  price     Decimal  @db.Decimal(10, 2)
+  menuItemId String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  menuItem    MenuItem    @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  orderItemModifiers OrderItemModifier[]
+}
+
+model AvailabilitySchedule {
+  id        String   @id @default(uuid())
+  menuItemId String
+  dayOfWeek Int      // 0 = Sunday, 1 = Monday, etc.
+  startTime String?  // HH:mm format
+  endTime   String?  // HH:mm format
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  menuItem MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+
+  @@index([menuItemId, dayOfWeek])
+}
+
+model Table {
+  id        String   @id @default(uuid())
+  number    Int      @unique
+  qrCode    String   @unique
+  capacity  Int      @default(4)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders Order[]
+}
+
+model Order {
+  id              String        @id @default(uuid())
+  orderNumber     String        @unique
+  userId          String?
+  tableId         String?
+  type            OrderType
+  status          OrderStatus   @default(CREATED)
+  paymentMethod   PaymentMethod?
+  paymentStatus   PaymentStatus @default(PENDING)
+  stripePaymentId String?
+  subtotal        Decimal       @db.Decimal(10, 2)
+  deliveryFee     Decimal       @db.Decimal(10, 2) @default(0)
+  tax             Decimal       @db.Decimal(10, 2) @default(0)
+  discount        Decimal       @db.Decimal(10, 2) @default(0)
+  total           Decimal       @db.Decimal(10, 2)
+  promoCodeId     String?
+  idempotencyKey  String?       @unique
+  notes           String?
+  // Eco-friendly options
+  digitalReceipt  Boolean       @default(true)
+  packagingPreference String?   // "MINIMAL", "ECO_BOX", "STANDARD"
+  includeCutlery  Boolean       @default(false)
+  // Admin fields
+  deliveryInstructions String?
+  priorityStatus    String?      // "NORMAL", "HIGH", "URGENT"
+  estimatedPrepTime Int?         // in minutes
+  rejectedReason    String?
+  // Voice AI order
+  isVoiceOrder      Boolean      @default(false)
+  voiceOrderId      String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  confirmedAt    DateTime?
+  acceptedAt      DateTime?
+  readyAt         DateTime?
+  dispatchedAt   DateTime?
+  completedAt     DateTime?
+
+  user        User?        @relation(fields: [userId], references: [id])
+  table       Table?       @relation(fields: [tableId], references: [id])
+  promoCode   PromoCode?   @relation(fields: [promoCodeId], references: [id])
+  items       OrderItem[]
+  auditLogs   AuditLog[]
+  feedback    OrderFeedback?
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  menuItemId String
+  quantity  Int
+  price     Decimal  @db.Decimal(10, 2)
+  notes     String?
+  createdAt DateTime @default(now())
+
+  order       Order              @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItem    MenuItem           @relation(fields: [menuItemId], references: [id])
+  modifiers   OrderItemModifier[]
+}
+
+model OrderItemModifier {
+  id          String   @id @default(uuid())
+  orderItemId String
+  modifierId  String
+  price       Decimal  @db.Decimal(10, 2)
+  createdAt   DateTime @default(now())
+
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  modifier  Modifier  @relation(fields: [modifierId], references: [id])
+
+  @@unique([orderItemId, modifierId])
+}
+
+model PromoCode {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  description String?
+  discountType String  // PERCENTAGE or FIXED
+  discountValue Decimal @db.Decimal(10, 2)
+  minOrderAmount Decimal? @db.Decimal(10, 2)
+  maxUses      Int?
+  currentUses  Int      @default(0)
+  validFrom    DateTime
+  validUntil   DateTime
+  isActive     Boolean  @default(true)
+  createdById  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  createdBy User?  @relation("CreatedBy", fields: [createdById], references: [id])
+  orders    Order[]
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  orderId   String?
+  action    String
+  entity    String
+  entityId  String?
+  changes   Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user  User?  @relation(fields: [userId], references: [id])
+  order Order? @relation(fields: [orderId], references: [id])
+
+  @@index([userId])
+  @@index([orderId])
+  @@index([createdAt])
+}
+
+model OrderFeedback {
+  id        String   @id @default(uuid())
+  orderId   String   @unique
+  rating    Int      // 1-5 stars
+  emoji     String?  // Emoji feedback
+  comment   String?
+  createdAt DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,70 @@
+import { PromoCodesService } from './promo-codes.service';
+import { CreatePromoCodeDto, UpdatePromoCodeDto } from './dto/promo-code.dto';
+export declare class PromoCodesController {
+    private readonly promoCodesService;
+    constructor(promoCodesService: PromoCodesService);
+    findAll(): Promise<{
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        description: string | null;
+        code: string;
+        discountType: string;
+        discountValue: import("@prisma/client/runtime/library").Decimal;
+        minOrderAmount: import("@prisma/client/runtime/library").Decimal | null;
+        maxUses: number | null;
+        currentUses: number;
+        validFrom: Date;
+        validUntil: Date;
+        createdById: string | null;
+    }[]>;
+    create(createDto: CreatePromoCodeDto, user: any): Promise<{
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        description: string | null;
+        code: string;
+        discountType: string;
+        discountValue: import("@prisma/client/runtime/library").Decimal;
+        minOrderAmount: import("@prisma/client/runtime/library").Decimal | null;
+        maxUses: number | null;
+        currentUses: number;
+        validFrom: Date;
+        validUntil: Date;
+        createdById: string | null;
+    }>;
+    update(id: string, updateDto: UpdatePromoCodeDto): Promise<{
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        description: string | null;
+        code: string;
+        discountType: string;
+        discountValue: import("@prisma/client/runtime/library").Decimal;
+        minOrderAmount: import("@prisma/client/runtime/library").Decimal | null;
+        maxUses: number | null;
+        currentUses: number;
+        validFrom: Date;
+        validUntil: Date;
+        createdById: string | null;
+    }>;
+    delete(id: string): Promise<{
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        description: string | null;
+        code: string;
+        discountType: string;
+        discountValue: import("@prisma/client/runtime/library").Decimal;
+        minOrderAmount: import("@prisma/client/runtime/library").Decimal | null;
+        maxUses: number | null;
+        currentUses: number;
+        validFrom: Date;
+        validUntil: Date;
+        createdById: string | null;
+    }>;
+}
