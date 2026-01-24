@@ -27,7 +27,10 @@ interface Order {
   notes?: string;
   isVoiceOrder?: boolean;
   voiceOrderId?: string;
-  total: number;
+  subtotal: number | string;
+  tax?: number | string;
+  discount?: number | string;
+  total: number | string;
   paymentStatus: string;
 }
 
