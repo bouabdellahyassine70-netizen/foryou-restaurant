@@ -5,12 +5,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 import { useRouter } from 'next/navigation';
-import { OrderStatus } from '@/types/order';
+import { OrderStatus, OrderStatusEnum } from '@/types/order';
 
 interface Order {
   id: string;
   orderNumber: string;
   status: OrderStatus;
+  type: 'TAKEAWAY' | 'DELIVERY';
   createdAt: string;
   customerName?: string;
   deliveryAddress?: string;
@@ -189,7 +190,7 @@ function DeliveryCard({ order, onStatusUpdate, isUpdating }: {
       {/* Action Buttons */}
       {!isDispatched ? (
         <button
-          onClick={() => onStatusUpdate(order.id, OrderStatus.DISPATCHED)}
+          onClick={() => onStatusUpdate(order.id, OrderStatusEnum.DISPATCHED)}
           disabled={isUpdating}
           className="w-full bg-purple-600 hover:bg-purple-500 text-white py-4 text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -197,7 +198,7 @@ function DeliveryCard({ order, onStatusUpdate, isUpdating }: {
         </button>
       ) : (
         <button
-          onClick={() => onStatusUpdate(order.id, OrderStatus.COMPLETED)}
+          onClick={() => onStatusUpdate(order.id, OrderStatusEnum.COMPLETED)}
           disabled={isUpdating}
           className="w-full bg-green-600 hover:bg-green-500 text-white py-4 text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed"
         >

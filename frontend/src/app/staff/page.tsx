@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 import { useRouter } from 'next/navigation';
-import { OrderStatus } from '@/types/order';
+import { OrderStatus, OrderStatusEnum } from '@/types/order';
 import { formatPrice } from '@/lib/price';
 import { AdminOrderModal } from '@/components/AdminOrderModal';
 
@@ -167,11 +167,11 @@ export default function StaffPage() {
   };
 
   const handleRejectOrder = async (orderId: string, reason: string) => {
-    await statusMutation.mutateAsync({ orderId, status: OrderStatus.REJECTED });
+    await statusMutation.mutateAsync({ orderId, status: OrderStatusEnum.REJECTED });
     // Update order with rejection reason
     try {
       await api.patch(`/orders/${orderId}/status`, { 
-        status: OrderStatus.REJECTED,
+        status: OrderStatusEnum.REJECTED,
         rejectedReason: reason 
       });
       queryClient.invalidateQueries({ queryKey: ['orders'] });

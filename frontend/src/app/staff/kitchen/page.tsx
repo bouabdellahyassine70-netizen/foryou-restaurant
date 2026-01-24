@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 import { useRouter } from 'next/navigation';
-import { OrderStatus } from '@/types/order';
+import { OrderStatus, OrderStatusEnum } from '@/types/order';
 
 interface Order {
   id: string;
@@ -57,7 +57,7 @@ export default function KitchenPage() {
   });
 
   const markReady = (orderId: string) => {
-    statusMutation.mutate({ orderId, status: OrderStatus.READY });
+    statusMutation.mutate({ orderId, status: OrderStatusEnum.READY });
   };
 
   if (!user) {
