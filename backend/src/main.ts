@@ -45,10 +45,15 @@ async function bootstrap() {
       if (isAllowed) {
         callback(null, true);
       } else {
-        // Log for debugging
-        console.log(`CORS blocked origin: ${origin}`);
-        console.log(`Allowed origins: ${JSON.stringify(allowedOrigins)}`);
-        callback(new Error('Not allowed by CORS'));
+        // Temporarily allow all Vercel URLs for debugging
+        if (origin.includes('.vercel.app')) {
+          console.log(`⚠️  Allowing Vercel origin (not in allowed list): ${origin}`);
+          callback(null, true);
+        } else {
+          // Log for debugging
+          console.log(`🚫 CORS blocked origin: ${origin}`);
+          callback(new Error('Not allowed by CORS'));
+        }
       }
     },
     credentials: true,
