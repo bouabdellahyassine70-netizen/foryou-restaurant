@@ -7,57 +7,7 @@ import { useAuthStore } from '@/lib/store';
 import { useRouter } from 'next/navigation';
 import { OrderStatus, OrderStatusEnum } from '@/types/order';
 import { formatPrice } from '@/lib/price';
-import { AdminOrderModal } from '@/components/AdminOrderModal';
-
-interface Order {
-  id: string;
-  orderNumber: string;
-  status: OrderStatus;
-  type: string;
-  createdAt: string;
-  customerName?: string;
-  phone?: string;
-  deliveryAddress?: string;
-  items: Array<{
-    id: string;
-    menuItem: { 
-      id: string;
-      name: string;
-      description?: string;
-      image?: string | null;
-      price: number | string;
-    };
-    quantity: number;
-    price: number | string;
-    notes?: string;
-    modifiers?: Array<{
-      id: string;
-      modifier: {
-        id: string;
-        name: string;
-        price: number | string;
-      };
-    }>;
-  }>;
-  notes?: string;
-  isVoiceOrder?: boolean;
-  voiceOrderId?: string;
-  subtotal: number | string;
-  tax?: number | string;
-  discount?: number | string;
-  total: number | string;
-  paymentStatus: string;
-  paymentMethod?: string;
-  rejectedReason?: string;
-  deliveryInstructions?: string;
-  user?: {
-    id: string;
-    email: string;
-    firstName?: string;
-    lastName?: string;
-    phone?: string;
-  };
-}
+import { AdminOrderModal, type Order } from '@/components/AdminOrderModal';
 
 // Professional black & white status styling
 const STATUS_STYLES: Record<OrderStatus, { bg: string; text: string; border: string }> = {

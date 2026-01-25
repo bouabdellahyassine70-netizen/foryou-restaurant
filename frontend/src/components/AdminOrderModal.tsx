@@ -27,7 +27,7 @@ interface OrderItem {
   }>;
 }
 
-interface Order {
+export interface Order {
   id: string;
   orderNumber: string;
   status: OrderStatus;
