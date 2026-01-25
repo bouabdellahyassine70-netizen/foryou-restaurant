@@ -27,6 +27,27 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Suppress Amplitude warnings if Amplitude is loaded by browser extensions
+              if (typeof window !== 'undefined' && window.amplitude) {
+                try {
+                  if (window.amplitude.getInstance) {
+                    const instance = window.amplitude.getInstance();
+                    if (instance && instance._options) {
+                      instance._options.defaultTracking = false;
+                    }
+                  }
+                } catch (e) {
+                  // Ignore errors
+                }
+              }
+            `,
+          }}
+        />
+      </head>
       <body className={`${inter.className} ${inter.variable}`}>
         <Providers>{children}</Providers>
       </body>
