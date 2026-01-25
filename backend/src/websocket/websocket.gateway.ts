@@ -10,7 +10,12 @@ import { Logger } from '@nestjs/common';
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: [
+      process.env.FRONTEND_URL || 'http://localhost:3000',
+      'http://localhost:3000',
+      'https://foryou-restaurant-k0jzjwrse.vercel.app',
+      /^https:\/\/foryou-restaurant-.*\.vercel\.app$/,
+    ],
     credentials: true,
   },
 })

@@ -16,10 +16,40 @@ async function bootstrap() {
     prefix: '/api/uploads/',
   });
 
-  // CORS
+  // CORS - Allow multiple origins for production and development
+  const frontendUrl = configService.get('FRONTEND_URL') || 'http://localhost:3000';
+  const allowedOrigins = [
+    frontendUrl,
+    'http://localhost:3000',
+    'https://foryou-restaurant-k0jzjwrse.vercel.app',
+    /^https:\/\/foryou-restaurant-.*\.vercel\.app$/,
+  ];
+  
   app.enableCors({
-    origin: configService.get('FRONTEND_URL') || 'http://localhost:3000',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, Postman, etc.)
+      if (!origin) return callback(null, true);
+      
+      // Check if origin is allowed
+      const isAllowed = allowedOrigins.some(allowed => {
+        if (typeof allowed === 'string') {
+          return origin === allowed;
+        }
+        if (allowed instanceof RegExp) {
+          return allowed.test(origin);
+        }
+        return false;
+      });
+      
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   // Global prefix
