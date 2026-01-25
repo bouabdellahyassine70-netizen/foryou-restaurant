@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
 import { Providers } from './providers';
 
@@ -27,28 +28,36 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <script
+      <body className={`${inter.className} ${inter.variable}`}>
+        <Script
+          id="suppress-amplitude-warning"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               // Suppress Amplitude warnings if Amplitude is loaded by browser extensions
-              if (typeof window !== 'undefined' && window.amplitude) {
-                try {
-                  if (window.amplitude.getInstance) {
-                    const instance = window.amplitude.getInstance();
-                    if (instance && instance._options) {
-                      instance._options.defaultTracking = false;
+              (function() {
+                function suppressAmplitudeWarning() {
+                  try {
+                    if (typeof window !== 'undefined' && window.amplitude) {
+                      const amplitude = window.amplitude;
+                      if (amplitude.getInstance) {
+                        const instance = amplitude.getInstance();
+                        if (instance && instance._options) {
+                          instance._options.defaultTracking = false;
+                        }
+                      }
                     }
+                  } catch (e) {
+                    // Ignore errors
                   }
-                } catch (e) {
-                  // Ignore errors
                 }
-              }
+                suppressAmplitudeWarning();
+                // Try again after a delay in case Amplitude loads later
+                setTimeout(suppressAmplitudeWarning, 1000);
+              })();
             `,
           }}
         />
-      </head>
-      <body className={`${inter.className} ${inter.variable}`}>
         <Providers>{children}</Providers>
       </body>
     </html>
