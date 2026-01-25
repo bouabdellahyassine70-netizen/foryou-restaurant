@@ -1,6 +1,18 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+// Get API URL and clean it (remove spaces, handle placeholder)
+let API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+
+// Clean the URL: remove spaces, handle placeholder
+API_URL = API_URL.trim().replace(/\s+/g, '');
+
+// If it's still a placeholder, show error in console
+if (API_URL.includes('placeholder') || API_URL.includes('YOUR-RAILWAY')) {
+  console.error('❌ ERROR: NEXT_PUBLIC_API_URL is not set correctly!');
+  console.error('Current value:', API_URL);
+  console.error('Please set NEXT_PUBLIC_API_URL in Vercel to your Railway backend URL');
+  console.error('Example: https://your-app.up.railway.app/api');
+}
 
 export const api = axios.create({
   baseURL: API_URL,
