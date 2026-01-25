@@ -23,6 +23,7 @@ async function bootstrap() {
     'http://localhost:3000',
     'https://foryou-restaurant-k0jzjwrse.vercel.app',
     /^https:\/\/foryou-restaurant-.*\.vercel\.app$/,
+    /^https:\/\/.*\.vercel\.app$/, // Allow all Vercel preview URLs
   ];
   
   app.enableCors({
@@ -44,6 +45,9 @@ async function bootstrap() {
       if (isAllowed) {
         callback(null, true);
       } else {
+        // Log for debugging
+        console.log(`CORS blocked origin: ${origin}`);
+        console.log(`Allowed origins: ${JSON.stringify(allowedOrigins)}`);
         callback(new Error('Not allowed by CORS'));
       }
     },
