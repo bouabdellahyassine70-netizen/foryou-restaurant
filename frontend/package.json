@@ -37,6 +37,13 @@
     "autoprefixer": "^10.4.16",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.0"
+  },
+  "overrides": {
+    "rimraf": "^5.0.0",
+    "glob": "^10.0.0",
+    "inflight": "npm:@isaacs/inflight@^1.0.6",
+    "@humanwhocodes/config-array": "npm:@eslint/config-array@^0.16.0",
+    "@humanwhocodes/object-schema": "npm:@eslint/object-schema@^2.1.0"
   }
 }
 
