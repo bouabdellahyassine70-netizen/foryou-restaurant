@@ -1,0 +1,71 @@
+╔══════════════════════════════════════════════════════════╗
+║  Variables d'Environnement pour Backend Vercel         ║
+╚══════════════════════════════════════════════════════════╝
+
+Copiez-collez ces variables dans Vercel → Settings → Environment Variables
+
+┌──────────────────────────────────────────────────────────┐
+│  Variable 1: DATABASE_URL                              │
+└──────────────────────────────────────────────────────────┘
+Nom: DATABASE_URL
+Valeur: [VOUS DEVEZ COLLER VOTRE URL NEON ICI]
+Format: postgresql://user:password@ep-xxx-xxx.region.aws.neon.tech/neondb?sslmode=require
+
+Comment obtenir:
+1. Allez sur https://console.neon.tech
+2. Sélectionnez votre projet
+3. Allez dans "Connection Details" ou "Connection String"
+4. Copiez l'URL complète
+
+┌──────────────────────────────────────────────────────────┐
+│  Variable 2: JWT_SECRET                                 │
+└──────────────────────────────────────────────────────────┘
+Nom: JWT_SECRET
+Valeur: yQ5/HcZAJr3/ZFg3JDrq+RfnOSKMjqoMXnWwuqD5a+s=
+
+┌──────────────────────────────────────────────────────────┐
+│  Variable 3: JWT_EXPIRES_IN                            │
+└──────────────────────────────────────────────────────────┘
+Nom: JWT_EXPIRES_IN
+Valeur: 7d
+
+┌──────────────────────────────────────────────────────────┐
+│  Variable 4: FRONTEND_URL                              │
+└──────────────────────────────────────────────────────────┘
+Nom: FRONTEND_URL
+Valeur: https://foryou-restaurant-k0jzjwrse.vercel.app
+
+⚠️ Si votre URL frontend Vercel est différente, remplacez-la!
+
+┌──────────────────────────────────────────────────────────┐
+│  Variable 5: NODE_ENV                                   │
+└──────────────────────────────────────────────────────────┘
+Nom: NODE_ENV
+Valeur: production
+
+┌──────────────────────────────────────────────────────────┐
+│  Variable 6: PORT                                      │
+└──────────────────────────────────────────────────────────┘
+Nom: PORT
+Valeur: 4000
+
+╔══════════════════════════════════════════════════════════╗
+║  Instructions                                           ║
+╚══════════════════════════════════════════════════════════╝
+
+1. Dans Vercel Dashboard → Votre Projet Backend
+2. Allez dans Settings → Environment Variables
+3. Cliquez sur "+ New Variable"
+4. Ajoutez chaque variable une par une:
+   - Copiez le Nom exactement
+   - Copiez la Valeur exactement
+   - Cliquez "Save"
+5. Répétez pour toutes les 6 variables
+
+Ordre recommandé:
+1. DATABASE_URL (le plus important!)
+2. JWT_SECRET
+3. JWT_EXPIRES_IN
+4. FRONTEND_URL
+5. NODE_ENV
+6. PORT
