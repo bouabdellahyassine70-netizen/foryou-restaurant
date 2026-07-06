@@ -265,6 +265,5 @@ model OrderFeedback {
   emoji     String?  // Emoji feedback
   comment   String?
   createdAt DateTime @default(now())
-
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
