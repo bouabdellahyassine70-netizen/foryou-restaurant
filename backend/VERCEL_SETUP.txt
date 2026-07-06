@@ -1,0 +1,34 @@
+# Vercel Backend — Required Settings
+
+## Project: foryou-restaurant-hbo9
+
+### Settings → General
+- **Root Directory:** `backend` (recommended)
+  - OR leave empty and use root `vercel.json` (already added)
+
+### Settings → Environment Variables
+Add ALL of these (Production + Preview + Development):
+
+```
+DATABASE_URL=your-neon-connection-string
+JWT_SECRET=y2JfyYbbXQtTHmlivxhLyaadQ4emBAc2HTG6vj/CanU=
+JWT_EXPIRES_IN=7d
+FRONTEND_URL=https://foryou-restaurant-k0jzjwrse.vercel.app
+NODE_ENV=production
+PORT=4000
+```
+
+### Settings → Build
+If Root Directory = `backend`:
+- **Build Command:** `npm run vercel-build`
+- **Install Command:** `npm install`
+- **Framework:** Other
+
+### Test URLs
+- https://foryou-restaurant-hbo9.vercel.app/
+- https://foryou-restaurant-hbo9.vercel.app/api/menu/categories
+
+### Frontend (separate project)
+```
+NEXT_PUBLIC_API_URL=https://foryou-restaurant-hbo9.vercel.app/api
+```
