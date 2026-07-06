@@ -1,16 +1,16 @@
-const express = require('express');
-const { NestFactory } = require('@nestjs/core');
-const { ExpressAdapter } = require('@nestjs/platform-express');
-const { ValidationPipe } = require('@nestjs/common');
-const { join } = require('path');
-const { AppModule } = require('../dist/app.module');
-
 let cachedApp = null;
 
 async function createApp() {
   if (cachedApp) {
     return cachedApp;
   }
+
+  const express = require('express');
+  const { NestFactory } = require('@nestjs/core');
+  const { ExpressAdapter } = require('@nestjs/platform-express');
+  const { ValidationPipe } = require('@nestjs/common');
+  const { join } = require('path');
+  const { AppModule } = require('../dist/app.module');
 
   const expressApp = express();
   const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
@@ -86,6 +86,7 @@ module.exports = async function handler(req, res) {
         statusCode: 500,
         message: 'Internal server error',
         error: error instanceof Error ? error.message : String(error),
+        hint: 'Check DATABASE_URL and JWT_SECRET are set in Vercel Environment Variables',
       }),
     );
   }
