@@ -1,15 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from '../src/app.module';
-import * as express from 'express';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import type { Express, Request, Response } from 'express';
 
-let cachedApp: express.Express | null = null;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const express = require('express') as typeof import('express');
 
-async function createApp(): Promise<express.Express> {
+let cachedApp: Express | null = null;
+
+async function createApp(): Promise<Express> {
   if (cachedApp) {
     return cachedApp;
   }
@@ -80,7 +83,7 @@ async function createApp(): Promise<express.Express> {
   return expressApp;
 }
 
-export default async function handler(req: express.Request, res: express.Response) {
+export default async function handler(req: Request, res: Response) {
   try {
     const app = await createApp();
     return app(req, res);
