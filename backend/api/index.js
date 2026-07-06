@@ -1,36 +1,29 @@
-import { NestFactory } from '@nestjs/core';
-import { ExpressAdapter } from '@nestjs/platform-express';
-import { AppModule } from '../src/app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
-import type { Express, Request, Response } from 'express';
+const express = require('express');
+const { NestFactory } = require('@nestjs/core');
+const { ExpressAdapter } = require('@nestjs/platform-express');
+const { ValidationPipe } = require('@nestjs/common');
+const { join } = require('path');
+const { AppModule } = require('../dist/app.module');
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const express = require('express') as typeof import('express');
+let cachedApp = null;
 
-let cachedApp: Express | null = null;
-
-async function createApp(): Promise<Express> {
+async function createApp() {
   if (cachedApp) {
     return cachedApp;
   }
 
   const expressApp = express();
-  const app = await NestFactory.create<NestExpressApplication>(
-    AppModule,
-    new ExpressAdapter(expressApp),
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
+
+  const configService = app.get(require('@nestjs/config').ConfigService);
+
+  expressApp.use(
+    '/api/uploads',
+    express.static(join(process.cwd(), 'prisma', 'uploads')),
   );
 
-  const configService = app.get(ConfigService);
-
-  app.useStaticAssets(join(process.cwd(), 'prisma', 'uploads'), {
-    prefix: '/api/uploads/',
-  });
-
   const frontendUrl = configService.get('FRONTEND_URL') || 'http://localhost:3000';
-  const allowedOrigins: Array<string | RegExp> = [
+  const allowedOrigins = [
     frontendUrl,
     'http://localhost:3000',
     'https://foryou-restaurant-k0jzjwrse.vercel.app',
@@ -41,13 +34,11 @@ async function createApp(): Promise<Express> {
   app.enableCors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-
       const isAllowed = allowedOrigins.some((allowed) => {
         if (typeof allowed === 'string') return origin === allowed;
         if (allowed instanceof RegExp) return allowed.test(origin);
         return false;
       });
-
       if (isAllowed || origin.includes('.vercel.app')) {
         callback(null, true);
       } else {
@@ -60,7 +51,6 @@ async function createApp(): Promise<Express> {
   });
 
   app.setGlobalPrefix('api');
-
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -83,7 +73,7 @@ async function createApp(): Promise<Express> {
   return expressApp;
 }
 
-export default async function handler(req: Request, res: Response) {
+module.exports = async function handler(req, res) {
   try {
     const app = await createApp();
     return app(req, res);
@@ -95,8 +85,8 @@ export default async function handler(req: Request, res: Response) {
       JSON.stringify({
         statusCode: 500,
         message: 'Internal server error',
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : String(error),
       }),
     );
   }
-}
+};
