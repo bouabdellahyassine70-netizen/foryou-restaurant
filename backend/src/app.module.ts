@@ -13,8 +13,6 @@ import { TablesModule } from './tables/tables.module';
 import { WebsocketModule } from './websocket/websocket.module';
 import { UploadModule } from './upload/upload.module';
 import { AppController } from './app.controller';
-import { BullModule } from '@nestjs/bullmq';
-import { Redis } from 'ioredis';
 
 @Module({
   imports: [
@@ -32,27 +30,6 @@ import { Redis } from 'ioredis';
             limit: Number(config.get('RATE_LIMIT_MAX')) || 100,
           }],
         };
-      },
-    }),
-    BullModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (config: ConfigService) => {
-        const redisUrl = config.get('REDIS_URL') || 'redis://localhost:6379';
-        const redis = new Redis(redisUrl, {
-          maxRetriesPerRequest: null,
-          retryStrategy: (times) => {
-            if (times > 10) {
-              console.warn('⚠️  Redis connection failed after 10 retries.');
-              return null;
-            }
-            return Math.min(times * 50, 2000);
-          },
-          enableOfflineQueue: false,
-          lazyConnect: true,
-        });
-        
-        return { connection: redis };
       },
     }),
     PrismaModule,

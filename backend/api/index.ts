@@ -96,12 +96,36 @@ async function createApp() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
+  // Root path for Vercel (outside Nest /api prefix)
+  expressApp.get('/', (_req, res) => {
+    res.json({
+      status: 'ok',
+      message: 'For You Restaurant API',
+      health: '/api/health',
+      menu: '/api/menu/categories',
+      docs: '/api/docs',
+    });
+  });
+
   await app.init();
   cachedApp = expressApp;
   return expressApp;
 }
 
 export default async function handler(req: any, res: any) {
-  const app = await createApp();
-  return app(req, res);
+  try {
+    const app = await createApp();
+    return app(req, res);
+  } catch (error) {
+    console.error('Vercel handler error:', error);
+    res.statusCode = 500;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(
+      JSON.stringify({
+        statusCode: 500,
+        message: 'Internal server error',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      }),
+    );
+  }
 }
